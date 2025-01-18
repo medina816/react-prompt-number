@@ -6,6 +6,7 @@ class MyComponent extends Component {
 
         this.state = {
             count: 3,
+            text: "",
             message: ""
         };
     }
@@ -68,7 +69,13 @@ class MyComponent extends Component {
             alert("incorrect problem, write like for examplae 5*, 5\, 5+, 5-");
         }
     };
+    handleChange = (event) => {
+        this.setState({ text: event.target.value });
+    };
 
+    sendMessage = () => {
+        this.setState({ message: this.state.text, text: "" });
+    };
     render() {
         return (
             <div>
@@ -78,7 +85,14 @@ class MyComponent extends Component {
                 <div>
                     <button onClick={this.handleOperation}> multiply</button>
                 </div>
+                <input
+                    value={this.state.text}
+                    type="text"
+                    onChange={this.handleChange}
+                />
+                <button onClick={this.sendMessage}>Send</button>
                 <h2>{this.state.message}</h2>
+                
             </div>
         );
     }
