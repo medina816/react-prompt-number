@@ -6,7 +6,6 @@ class MyComponent extends Component {
 
         this.state = {
             count: 3,
-            text: "",
             message: ""
         };
     }
@@ -14,9 +13,10 @@ class MyComponent extends Component {
     componentDidMount() {
         document.addEventListener("keydown", this.handleKeyboard);
     }
+
     handleKeyboard = (event) => {
         if (event.key === "Enter") {
-            this.sendMessage();
+            this.handleOperation();
         }
     };
 
@@ -30,43 +30,54 @@ class MyComponent extends Component {
         }
     };
 
-    multiply = () => {
+    handleOperation = () => {
         const { count } = this.state;
-        const multiplier = prompt("write a number please");
 
-        if (multiplier && !isNaN(multiplier)) { 
-            this.setState({ count: count * multiplier })
+        const input = prompt("write a problem");
+
+        const operator = input?.match(/[\+\-\*\/]/);
+        const number = parseFloat(input?.split(operator)[0].trim()); 
+
+        if (operator && !isNaN(number)) {
+            let result;
+
+            switch (operator[0]) {
+                case "*":
+                    result = count * number;
+                    break;
+                case "/":
+                    if (number !== 0) {
+                        result = count / number;
+                    } else {
+                        alert("Нельзя делить на ноль!");
+                        return;
+                    }
+                    break;
+                case "+":
+                    result = count + number;
+                    break;
+                case "-":
+                    result = count - number;
+                    break;
+                default:
+                    return;
+            }
+
+            this.setState({ count: result });
         } else {
-            alert(" write a correct number!");
+            alert("incorrect problem, write like for examplae 5*, 5\, 5+, 5-");
         }
     };
-
-    handleChange = (event) => {
-        this.setState({ text: event.target.value });
-    };
-
-    sendMessage = () => {
-        this.setState({ message: this.state.text, text: "" });
-    };
-
-
 
     render() {
         return (
             <div>
-                <h1>My Component</h1>
                 <h2>{this.state.count}</h2>
-                <button onClick={this.increment}>Add</button>
-                <button onClick={this.decrement}>Decrement</button>
+                <button onClick={this.increment}>increment</button>
+                <button onClick={this.decrement}>decrement</button>
                 <div>
-                    <button onClick={this.multiply}>Multiply</button>
+                    <button onClick={this.handleOperation}> multiply</button>
                 </div>
-                <input
-                    value={this.state.text}
-                    type="text"
-                    onChange={this.handleChange}
-                />
-                <button onClick={this.sendMessage}>Send</button>
                 <h2>{this.state.message}</h2>
             </div>
         );
